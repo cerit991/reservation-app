@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/YouChillLounge/YouChill/main/logo/logo.jpg" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #282828;
+            color: #FFF;
+        }
+        .container {
+            margin: 50px auto;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #FFF;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: rgba(255, 69, 0, 0.8);
+        }
+        td {
+            background: rgba(255, 69, 0, 0.5);
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 700;
+            background-color: #FF4500;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #E03E00;
+            transform: translateY(-3px);
+        }
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Notes/Requests</th>
+                </tr>
+            </thead>
+            <tbody id="reservation-table-body">
+                <!-- Reservations will be dynamically added here -->
+            </tbody>
+        </table>
+        <button class="btn" onclick="fetchReservations()">Refresh Reservations</button>
+    </div>
+
+    <script>
+        function fetchReservations() {
+            // Dummy data - In a real scenario, you would fetch this data from your backend
+            const reservations = [
+                {
+                    name: "John Doe",
+                    email: "john@example.com",
+                    date: "2024-08-01",
+                    time: "18:00",
+                    notes: "Vegetarian"
+                },
+                {
+                    name: "Jane Smith",
+                    email: "jane@example.com",
+                    date: "2024-08-02",
+                    time: "19:00",
+                    notes: "Window seat"
+                }
+            ];
+
+            const tableBody = document.getElementById('reservation-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            reservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reservation.name}</td>
+                    <td>${reservation.email}</td>
+                    <td>${reservation.date}</td>
+                    <td>${reservation.time}</td>
+                    <td>${reservation.notes}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fetch reservations when the page loads
+        window.onload = fetchReservations;
+    </script>
+</body>
+</html>
