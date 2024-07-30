@@ -138,7 +138,27 @@
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script>
+        // Firebase konfigürasyonu
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDJCghq6IiAJ2zH5OqZUUEuZ1pRC1cFsg",
+            authDomain: "data-9ecb9.firebaseapp.com",
+            databaseURL: "https://data-9ecb9-default-rtdb.firebaseio.com",
+            projectId: "data-9ecb9",
+            storageBucket: "data-9ecb9.appspot.com",
+            messagingSenderId: "1003369338259",
+            appId: "1:1003369338259:web:02c9659fd33fc9364f8466",
+            measurementId: "G-83NQP68HG1"
+        };
+
+        // Firebase'i başlat
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
@@ -155,17 +175,21 @@
             if (name && email && date && time) {
                 if (validateEmail(email)) {
                     const reservation = { name, email, date, time, notes: note };
-                    const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-                    reservations.push(reservation);
-                    localStorage.setItem('reservations', JSON.stringify(reservations));
-                    alert('Reservation submitted successfully!');
-                    emailError.textContent = ''; // Hata mesajını temizle
-                    // Clear form fields
-                    document.getElementById('res-name').value = '';
-                    document.getElementById('res-email').value = '';
-                    document.getElementById('res-date').value = '';
-                    document.getElementById('res-time').value = '';
-                    document.getElementById('res-note').value = '';
+                    const newReservationRef = database.ref('reservations').push();
+                    newReservationRef.set(reservation)
+                        .then(() => {
+                            alert('Reservation submitted successfully!');
+                            emailError.textContent = ''; // Hata mesajını temizle
+                            // Clear form fields
+                            document.getElementById('res-name').value = '';
+                            document.getElementById('res-email').value = '';
+                            document.getElementById('res-date').value = '';
+                            document.getElementById('res-time').value = '';
+                            document.getElementById('res-note').value = '';
+                        })
+                        .catch(error => {
+                            console.error('Error submitting reservation:', error);
+                        });
                 } else {
                     emailError.textContent = 'Please enter a valid email address.';
                 }
