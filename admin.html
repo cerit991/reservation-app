@@ -86,22 +86,52 @@
         <button class="btn" onclick="fetchReservations()">Refresh Reservations</button>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script>
-        function fetchReservations() {
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const tableBody = document.getElementById('reservation-table-body');
-            tableBody.innerHTML = ''; // Clear existing rows
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-            reservations.forEach(reservation => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${reservation.name}</td>
-                    <td>${reservation.email}</td>
-                    <td>${reservation.date}</td>
-                    <td>${reservation.time}</td>
-                    <td>${reservation.notes}</td>
-                `;
-                tableBody.appendChild(row);
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDJCghq6IiAJ2zH5OqZUUEuZ1pRC1cFsg",
+            authDomain: "data-9ecb9.firebaseapp.com",
+            databaseURL: "https://data-9ecb9-default-rtdb.firebaseio.com",
+            projectId: "data-9ecb9",
+            storageBucket: "data-9ecb9.appspot.com",
+            messagingSenderId: "1003369338259",
+            appId: "1:1003369338259:web:02c9659fd33fc9364f8466",
+            measurementId: "G-83NQP68HG1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+
+        function fetchReservations() {
+            const reservationsRef = ref(database, 'reservations');
+            onValue(reservationsRef, (snapshot) => {
+                const reservations = snapshot.val();
+                const tableBody = document.getElementById('reservation-table-body');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                for (let id in reservations) {
+                    const reservation = reservations[id];
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${reservation.name}</td>
+                        <td>${reservation.email}</td>
+                        <td>${reservation.date}</td>
+                        <td>${reservation.time}</td>
+                        <td>${reservation.notes}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
             });
         }
 
