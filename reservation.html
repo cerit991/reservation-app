@@ -156,7 +156,7 @@
         };
 
         // Firebase'i başlat
-        firebase.initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         function validateEmail(email) {
@@ -178,6 +178,7 @@
                     const newReservationRef = database.ref('reservations').push();
                     newReservationRef.set(reservation)
                         .then(() => {
+                            console.log('Reservation submitted successfully!');
                             alert('Reservation submitted successfully!');
                             emailError.textContent = ''; // Hata mesajını temizle
                             // Clear form fields
@@ -189,6 +190,7 @@
                         })
                         .catch(error => {
                             console.error('Error submitting reservation:', error);
+                            alert('Error submitting reservation. Please try again.');
                         });
                 } else {
                     emailError.textContent = 'Please enter a valid email address.';
