@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Reservations</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/YouChillLounge/YouChill/main/logo/logo.jpg" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: url('https://raw.githubusercontent.com/YouChillLounge/YouChill/main/image/449340557_1540764360131556_2715538463646613877_n.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 1s ease;
+        }
+
+        .reservation-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.7); /* Saydam arka plan */
+            backdrop-filter: blur(10px); /* Arka plan bulanıklığı */
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Gölge efekti */
+            border-radius: 10px;
+            max-width: 500px;
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        .reservation-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .reservation-panel input,
+        .reservation-panel textarea,
+        .reservation-panel button {
+            margin: 10px;
+            padding: 12px 20px; /* Daha geniş padding */
+            border: 2px solid #FF4500; /* Sınır rengi */
+            border-radius: 25px;
+            font-family: 'Ubuntu', sans-serif;
+            width: 80%; /* Genişlik azaltıldı */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Gölge efekti */
+            box-sizing: border-box;
+        }
+
+        .reservation-panel input,
+        .reservation-panel textarea {
+            background-color: rgba(255, 255, 255, 0.5); /* Hafif saydam arka plan */
+            color: #333; /* Metin rengi */
+        }
+
+        .reservation-panel textarea {
+            resize: none; /* Yeniden boyutlandırmayı devre dışı bırakma */
+            height: 100px; /* Metin alanının yüksekliği */
+        }
+
+        .reservation-panel button {
+            background-color: #FF4500;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .reservation-panel button:hover {
+            background-color: #E03E00;
+            transform: translateY(-3px);
+        }
+
+        .reservation-panel button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .reservation-panel h2, .reservation-container h1 {
+            margin-bottom: 20px;
+            color: #FF4500;
+        }
+
+        .reservation-panel label {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+            display: block;
+            text-align: left;
+            width: 80%; /* Genişlik azaltıldı */
+            box-sizing: border-box;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            width: 80%; /* Genişlik azaltıldı */
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="reservation-container">
+        <h1>You Chill Lounge</h1>
+        <div class="reservation-panel">
+            <h2>Quick Reservations</h2>
+            <label for="res-name">Name</label>
+            <input type="text" id="res-name" placeholder="Enter your name">
+            <label for="res-email">Email</label>
+            <input type="email" id="res-email" placeholder="Enter your email">
+            <div class="error-message" id="email-error"></div> <!-- Hata mesajı alanı -->
+            <label for="res-date">Reservation Date</label>
+            <input type="date" id="res-date">
+            <label for="res-time">Reservation Time</label>
+            <input type="time" id="res-time">
+            <label for="res-note">Notes/Requests</label>
+            <textarea id="res-note" placeholder="Enter your notes or requests"></textarea>
+            <button onclick="submitReservation()">Submit Reservation</button>
+        </div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function submitReservation() {
+            const name = document.getElementById('res-name').value;
+            const email = document.getElementById('res-email').value;
+            const date = document.getElementById('res-date').value;
+            const time = document.getElementById('res-time').value;
+            const note = document.getElementById('res-note').value;
+            const emailError = document.getElementById('email-error');
+
+            if (name && email && date && time) {
+                if (validateEmail(email)) {
+                    const reservation = { name, email, date, time, notes: note };
+                    const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+                    reservations.push(reservation);
+                    localStorage.setItem('reservations', JSON.stringify(reservations));
+                    alert('Reservation submitted successfully!');
+                    emailError.textContent = ''; // Hata mesajını temizle
+                    // Clear form fields
+                    document.getElementById('res-name').value = '';
+                    document.getElementById('res-email').value = '';
+                    document.getElementById('res-date').value = '';
+                    document.getElementById('res-time').value = '';
+                    document.getElementById('res-note').value = '';
+                } else {
+                    emailError.textContent = 'Please enter a valid email address.';
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    </script>
+</body>
+</html>
